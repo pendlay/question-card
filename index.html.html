@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>맛, 잇다 — 우리의 이야기</title>
+    <link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Nanum+Myeongjo:wght@400;700&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Gaegu', 'Noto Sans KR', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(160deg, #FDF6EC 0%, #F5E6D3 50%, #EDD5B3 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 배경 장식 */
+        body::before {
+            content: '🍚';
+            position: fixed;
+            top: 5%;
+            left: 5%;
+            font-size: 3rem;
+            opacity: 0.15;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        body::after {
+            content: '🥄';
+            position: fixed;
+            bottom: 10%;
+            right: 8%;
+            font-size: 3rem;
+            opacity: 0.15;
+            animation: float 8s ease-in-out infinite reverse;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(-5deg); }
+            50% { transform: translateY(-15px) rotate(5deg); }
+        }
+
+        /* 헤더 */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header .subtitle {
+            font-family: 'Nanum Myeongjo', serif;
+            font-size: 1rem;
+            color: #B07A50;
+            letter-spacing: 0.15em;
+            margin-bottom: 12px;
+        }
+
+        .header h1 {
+            font-family: 'Nanum Myeongjo', serif;
+            font-size: 2.8rem;
+            color: #3E2723;
+            margin-bottom: 10px;
+            line-height: 1.3;
+        }
+
+        .header .desc {
+            font-size: 1rem;
+            color: #8D6E63;
+            font-weight: 300;
+        }
+
+        /* 카드 컨테이너 */
+        .card-container {
+            width: 100%;
+            max-width: 560px;
+            position: relative;
+        }
+
+        /* 카드 */
+        .card {
+            background: #FFFDF9;
+            border-radius: 28px;
+            padding: 52px 48px;
+            box-shadow:
+                0 4px 6px rgba(93, 64, 55, 0.06),
+                0 20px 60px rgba(93, 64, 55, 0.12);
+            border: 1px solid rgba(180, 120, 80, 0.12);
+            text-align: center;
+            min-height: 260px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            position: relative;
+        }
+
+        .card.fade-out {
+            transform: translateY(-12px);
+            opacity: 0;
+        }
+
+        .card.fade-in {
+            transform: translateY(12px);
+            opacity: 0;
+        }
+
+        .card-emoji {
+            font-size: 2.8rem;
+            margin-bottom: 24px;
+            display: block;
+        }
+
+        .card-question {
+            font-family: 'Gaegu', sans-serif;
+            font-size: 2.2rem;
+            color: #3E2723;
+            line-height: 1.8;
+            word-break: keep-all;
+            white-space: pre-line;
+        }
+
+        /* 진행도 */
+        .progress-area {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 32px;
+        }
+
+        .progress-dots {
+            display: flex;
+            gap: 8px;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #DDD0C0;
+            transition: all 0.3s ease;
+        }
+
+        .dot.active {
+            background: #BF360C;
+            width: 24px;
+            border-radius: 4px;
+        }
+
+        .progress-text {
+            font-size: 0.85rem;
+            color: #B07A50;
+            font-weight: 300;
+        }
+
+        /* 버튼 */
+        .btn-area {
+            margin-top: 36px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .btn-next {
+            width: 100%;
+            max-width: 560px;
+            padding: 20px;
+            background: #3E2723;
+            color: #FDF6EC;
+            border: none;
+            border-radius: 50px;
+            font-family: 'Gaegu', sans-serif;
+            font-size: 1.4rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 0.05em;
+        }
+
+        .btn-next:hover {
+            background: #BF360C;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(191, 54, 12, 0.3);
+        }
+
+        .btn-next:active {
+            transform: translateY(0);
+        }
+
+        .btn-next:disabled {
+            background: #C4B09A;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-prev {
+            width: 100%;
+            max-width: 560px;
+            padding: 16px;
+            background: transparent;
+            color: #8D6E63;
+            border: 2px solid #DDD0C0;
+            border-radius: 50px;
+            font-family: 'Gaegu', sans-serif;
+            font-size: 1.3rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 0.05em;
+        }
+
+        .btn-prev:hover {
+            border-color: #8D6E63;
+            color: #3E2723;
+        }
+
+        .btn-prev:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .btn-reset {
+            background: none;
+            border: none;
+            color: #B07A50;
+            font-size: 1.1rem;
+            cursor: pointer;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+            font-family: 'Gaegu', sans-serif;
+        }
+
+        .btn-reset:hover {
+            color: #BF360C;
+        }
+
+        /* 완료 화면 */
+        .done-card {
+            background: #FFFDF9;
+            border-radius: 28px;
+            padding: 60px 48px;
+            box-shadow:
+                0 4px 6px rgba(93, 64, 55, 0.06),
+                0 20px 60px rgba(93, 64, 55, 0.12);
+            border: 1px solid rgba(180, 120, 80, 0.12);
+            text-align: center;
+            width: 100%;
+            max-width: 560px;
+            display: none;
+        }
+
+        .done-card .done-emoji {
+            font-size: 4rem;
+            display: block;
+            margin-bottom: 24px;
+        }
+
+        .done-card h2 {
+            font-family: 'Gaegu', sans-serif;
+            font-size: 2rem;
+            color: #3E2723;
+            margin-bottom: 16px;
+        }
+
+        .done-card p {
+            color: #8D6E63;
+            font-size: 1rem;
+            line-height: 1.8;
+            font-weight: 300;
+        }
+
+        /* 푸터 */
+        .footer {
+            margin-top: 48px;
+            text-align: center;
+            color: #C4B09A;
+            font-size: 0.8rem;
+            font-weight: 300;
+        }
+
+        /* 인트로 화면 */
+        .intro-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            max-width: 560px;
+            width: 100%;
+        }
+
+        .intro-title {
+            font-family: 'Gaegu', sans-serif;
+            font-size: 3rem;
+            color: #3E2723;
+            margin-bottom: 8px;
+        }
+
+        .intro-subtitle {
+            font-family: 'Gaegu', sans-serif;
+            font-size: 1rem;
+            color: #B07A50;
+            letter-spacing: 0.1em;
+            margin-bottom: 40px;
+        }
+
+        .intro-desc {
+            font-family: 'Gaegu', sans-serif;
+            font-size: 1.4rem;
+            color: #5C3A1E;
+            line-height: 2;
+            margin-bottom: 48px;
+            word-break: keep-all;
+        }
+
+        .btn-start {
+            width: 100%;
+            max-width: 560px;
+            padding: 22px;
+            background: #3E2723;
+            color: #FDF6EC;
+            border: none;
+            border-radius: 50px;
+            font-family: 'Gaegu', sans-serif;
+            font-size: 1.4rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 0.05em;
+            box-shadow: 0 8px 24px rgba(62, 39, 35, 0.2);
+        }
+
+        .btn-start:hover {
+            background: #BF360C;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(191, 54, 12, 0.3);
+        }
+
+        /* 질문 화면 */
+        .question-screen {
+            display: none;
+            width: 100%;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* 반응형 */
+        @media (max-width: 480px) {
+            .header h1 { font-size: 2.2rem; }
+            .card { padding: 40px 28px; }
+            .card-question { font-size: 1.8rem; }
+            .btn-next { font-size: 1.1rem; padding: 18px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 인트로 화면 -->
+    <div class="intro-screen" id="introScreen">
+        <h1 class="intro-title">맛, 잇다(聯)</h1>
+        <p class="intro-subtitle">천천히, 함께 나눠요</p>
+        <p class="intro-desc">음식을 만드는 동안<br>질문 카드를 통해<br>서로에 대해 알아가봐요 🍽️</p>
+        <button class="btn-start" onclick="startQuestions()">🃏 질문 카드 보기</button>
+    </div>
+
+    <!-- 질문 화면 -->
+    <div class="question-screen" id="questionScreen">
+
+    <div class="header">
+        <p class="subtitle">맛, 잇다(聯)</p>
+        <h1>우리의 이야기</h1>
+        <p class="desc">천천히, 함께 나눠요</p>
+    </div>
+
+    <div class="card-container">
+        <div class="card" id="questionCard">
+            <span class="card-emoji" id="cardEmoji">🍚</span>
+            <p class="card-question" id="questionText">요즘 가장 자주 먹는 음식이 뭐예요?</p>
+        </div>
+    </div>
+
+    <div class="done-card" id="doneCard">
+        <span class="done-emoji">🌿</span>
+        <h2>모든 이야기를<br>나눴어요</h2>
+        <p>오늘 나눈 이야기들이<br>오래오래 기억에 남기를 바랍니다.</p>
+    </div>
+
+    <div class="progress-area" id="progressArea">
+        <div class="progress-dots" id="progressDots"></div>
+        <span class="progress-text" id="progressText">1 / 8</span>
+    </div>
+
+    <div class="btn-area">
+        <button class="btn-next" id="btnNext" onclick="nextQuestion()">
+            다음 이야기로 →
+        </button>
+        <button class="btn-prev" id="btnPrev" onclick="prevQuestion()" disabled>
+            ← 이전 이야기로
+        </button>
+        <button class="btn-reset" onclick="resetQuestions()">처음부터 다시</button>
+    </div>
+
+    </div><!-- question-screen end -->
+
+    <div class="footer">
+        배워서 남 주는 프로젝트 · 공일레인저 × 영중종합복지관
+    </div>
+
+    <script>
+        const questions = [
+            { emoji: '🍚', text: '요즘 가장 자주 먹는 음식이 뭐예요?' },
+            { emoji: '🥘', text: '누군가 해준 음식 중에\n가장 기억에 남는 게 있어요?' },
+            { emoji: '✨', text: '스무 살 때 가장\n열심히 했던 게 뭐예요?\n(청년들은 현재 가장 열심히 하고 있는 것)' },
+            { emoji: '💭', text: '그 나이에 가장\n고민했던 게 뭐였어요?\n(청년들은 현재 가장 고민되는 것)' },
+            { emoji: '🌧️', text: '살면서 가장 힘들었던\n순간이 언제예요?' },
+            { emoji: '🌱', text: '그 순간을\n어떻게 버텼어요?' },
+            { emoji: '🔄', text: '나이가 들면서 가장 크게\n변한 가치관이 뭐예요?' },
+            { emoji: '📝', text: '어릴 적의 나한테 편지를 쓴다면\n뭐라고 쓰고 싶나요?' },
+        ];
+
+        let current = 0;
+
+        function startQuestions() {
+            document.getElementById('introScreen').style.display = 'none';
+            document.getElementById('questionScreen').style.display = 'flex';
+            initDots();
+        }
+
+        function initDots() {
+            const dots = document.getElementById('progressDots');
+            dots.innerHTML = '';
+            questions.forEach((_, i) => {
+                const dot = document.createElement('div');
+                dot.className = 'dot' + (i === 0 ? ' active' : '');
+                dots.appendChild(dot);
+            });
+        }
+
+        function updateDots() {
+            const dots = document.querySelectorAll('.dot');
+            dots.forEach((dot, i) => {
+                dot.className = 'dot' + (i === current ? ' active' : '');
+            });
+        }
+
+        function nextQuestion() {
+            const card = document.getElementById('questionCard');
+            const btn = document.getElementById('btnNext');
+
+            card.classList.add('fade-out');
+            btn.disabled = true;
+
+            setTimeout(() => {
+                current++;
+
+                if (current >= questions.length) {
+                    document.querySelector('.card-container').style.display = 'none';
+                    document.getElementById('doneCard').style.display = 'block';
+                    document.getElementById('progressArea').style.display = 'none';
+                    btn.style.display = 'none';
+                    return;
+                }
+
+                document.getElementById('cardEmoji').textContent = questions[current].emoji;
+                document.getElementById('questionText').textContent = questions[current].text;
+                document.getElementById('progressText').textContent = `${current + 1} / ${questions.length}`;
+                updateDots();
+
+                card.classList.remove('fade-out');
+                card.classList.add('fade-in');
+
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        card.classList.remove('fade-in');
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
+                        btn.disabled = false;
+                        document.getElementById('btnPrev').disabled = false;
+                    });
+                });
+            }, 300);
+        }
+
+        function prevQuestion() {
+            if (current <= 0) return;
+            const card = document.getElementById('questionCard');
+            const btn = document.getElementById('btnNext');
+            const btnPrev = document.getElementById('btnPrev');
+
+            card.classList.add('fade-out');
+            btn.disabled = true;
+            btnPrev.disabled = true;
+
+            setTimeout(() => {
+                current--;
+
+                document.getElementById('cardEmoji').textContent = questions[current].emoji;
+                document.getElementById('questionText').textContent = questions[current].text;
+                document.getElementById('progressText').textContent = `${current + 1} / ${questions.length}`;
+                updateDots();
+
+                btnPrev.disabled = current === 0;
+
+                card.classList.remove('fade-out');
+                card.classList.add('fade-in');
+
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        card.classList.remove('fade-in');
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
+                        btn.disabled = false;
+                        btnPrev.disabled = current === 0;
+                    });
+                });
+            }, 300);
+        }
+
+        function resetQuestions() {
+            current = 0;
+            document.getElementById('cardEmoji').textContent = questions[0].emoji;
+            document.getElementById('questionText').textContent = questions[0].text;
+            document.getElementById('progressText').textContent = `1 / ${questions.length}`;
+            document.querySelector('.card-container').style.display = 'block';
+            document.getElementById('doneCard').style.display = 'none';
+            document.getElementById('progressArea').style.display = 'flex';
+            document.getElementById('btnNext').style.display = 'block';
+            document.getElementById('btnNext').disabled = false;
+            document.getElementById('btnPrev').disabled = true;
+            updateDots();
+        }
+
+    </script>
+
+</body>
+</html>
